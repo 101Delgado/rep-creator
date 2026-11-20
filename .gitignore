@@ -31,3 +31,6 @@ dist/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Archivos de datos 
+formulario.csv
