@@ -1,0 +1,1 @@
+A Python script that automates the creation and setup of multiple GitHub repositories using a structured .csv file. It reads repository names, configurations, and user mappings directly from the dataset to provision repos and invite collaborators automatically, eliminating repetitive manual setup.
