@@ -1,0 +1,33 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Variables de entorno y tokens
+.env
+.env.*
+!.env.example
+
+# Caché y compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# Logs
+*.log
+
+# Datos locales (descomenta si los CSV tienen usuarios o datos que no quieres públicos)
+# *.csv
+# !example.csv
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
