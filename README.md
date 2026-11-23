@@ -280,5 +280,5 @@ This project is distributed under the **MIT** License.
 
 ### Vista principal — Grupos y Pendientes / Main View — Groups & Pending
 <p align="center">
-  <img src="assets/imagen_1.jpg" alt="RepCreator - Vista principal" width="90%">
+  <img src="assets/imagen_1.png" alt="RepCreator - Vista principal" width="90%">
 </p>
