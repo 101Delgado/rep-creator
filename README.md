@@ -31,12 +31,10 @@
 ```text
 RepCreator/
 ├── main.py                  # Lanzador principal de la interfaz gráfica
-├── app_gui.py               # Interfaz de usuario (Tkinter / TTK) y gestión de hilos
 ├── function_dataframe.py    # Limpieza de datos, unificación, CSV y exportación de resúmenes
 ├── github_manager.py        # Integración con la API REST de GitHub y control de rate limits
 ├── requirements.txt         # Dependencias de Python
-├── .env.example             # Plantilla de variables de entorno
-└── .env                     # Credenciales locales (ignorado por Git)
+└── .env.example             # Plantilla de variables de entorno
 ```
 
 ### Requisitos e instalación
@@ -45,8 +43,8 @@ Requiere **Python 3.10 o superior**.
 
 1. **Clona el repositorio:**
    ```bash
-   git clone [https://github.com/](https://github.com/)<tu-usuario>/RepCreator.git
-   cd RepCreator
+   git clone [https://github.com/](https://github.com/)<tu-usuario>/rep-creator.git
+   cd rep-creator
    ```
 
 2. **Crea y activa un entorno virtual:**
@@ -166,12 +164,10 @@ Este proyecto se distribuye bajo la licencia **MIT**.
 ```text
 RepCreator/
 ├── main.py                  # Main launcher for the graphical interface
-├── app_gui.py               # Desktop UI (Tkinter / TTK) and background threading
 ├── function_dataframe.py    # Data cleaning, unification, CSV handling, and report export
 ├── github_manager.py        # GitHub REST API integration and rate-limit handling
 ├── requirements.txt         # Python dependencies
-├── .env.example             # Environment variables template
-└── .env                     # Local credentials (ignored by Git)
+└── .env.example             # Environment variables template
 ```
 
 ### Requirements & Installation
@@ -180,8 +176,8 @@ Requires **Python 3.10 or higher**.
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/](https://github.com/)<your-username>/RepCreator.git
-   cd RepCreator
+   git clone [https://github.com/](https://github.com/)<your-username>/rep-creator.git
+   cd rep-creator
    ```
 
 2. **Create and activate a virtual environment:**
