@@ -275,3 +275,10 @@ python main.py
 ### License
 
 This project is distributed under the **MIT** License.
+
+## Capturas de pantalla / Screenshots
+
+### Vista principal — Grupos y Pendientes / Main View — Groups & Pending
+<p align="center">
+  <img src="assets/imagen_1.jpg" alt="RepCreator - Vista principal" width="90%">
+</p>
