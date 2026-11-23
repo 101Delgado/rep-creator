@@ -255,29 +255,88 @@ class RepCreatorApp(tk.Tk):
         self.progress.pack(side="right")
 
     def _construir_panel_izquierdo(self, parent: ttk.Frame) -> None:
+        # 3. Acciones fijadas abajo para que el botón de GitHub siempre esté visible
+        card_run = ttk.LabelFrame(parent, text="3. Acciones en GitHub", style="Card.TLabelframe")
+        card_run.pack(side="bottom", fill="x", pady=(8, 0))
+
+        self.btn_ejecutar = ttk.Button(
+            card_run,
+            text="Crear Repos y Asignar Pendientes",
+            style="Primary.TButton",
+            command=self._iniciar_procesamiento_repos,
+        )
+        self.btn_ejecutar.pack(fill="x", pady=(0, 5))
+
+        self.btn_defecto = ttk.Button(
+            card_run,
+            text="Solo asignar colaborador por defecto",
+            style="Secondary.TButton",
+            command=self._iniciar_solo_defecto,
+        )
+        self.btn_defecto.pack(fill="x", pady=(0, 5))
+
+        self.btn_detener = ttk.Button(
+            card_run,
+            text="Detener y Guardar Progreso",
+            style="Danger.TButton",
+            command=self._detener_proceso,
+            state="disabled",
+        )
+        self.btn_detener.pack(fill="x")
+
+        # Contenedor con scroll vertical para las secciones 1 y 2
+        scroll_box = ttk.Frame(parent, style="Main.TFrame")
+        scroll_box.pack(side="top", fill="both", expand=True)
+
+        canvas = tk.Canvas(scroll_box, bg=BG_MAIN, highlightthickness=0, bd=0)
+        scrollbar = ttk.Scrollbar(scroll_box, orient="vertical", command=canvas.yview)
+        inner = ttk.Frame(canvas, style="Main.TFrame")
+
+        win_id = canvas.create_window((0, 0), window=inner, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        inner.bind(
+            "<Configure>",
+            lambda _e: canvas.configure(scrollregion=canvas.bbox("all")),
+        )
+        canvas.bind(
+            "<Configure>",
+            lambda e: canvas.itemconfigure(win_id, width=e.width),
+        )
+
+        # Permite desplazar con la rueda del ratón sobre el panel izquierdo
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        canvas.bind("<Enter>", lambda _e: canvas.bind_all("<MouseWheel>", _on_mousewheel))
+        canvas.bind("<Leave>", lambda _e: canvas.unbind_all("<MouseWheel>"))
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
         # 1. CSV y Columnas
-        card_csv = ttk.LabelFrame(parent, text="1. Archivo CSV y Columnas", style="Card.TLabelframe")
-        card_csv.pack(fill="x", pady=(0, 10))
+        card_csv = ttk.LabelFrame(inner, text="1. Archivo CSV y Columnas", style="Card.TLabelframe")
+        card_csv.pack(fill="x", pady=(0, 8), padx=(0, 4))
 
         row_file = ttk.Frame(card_csv, style="Panel.TFrame")
-        row_file.pack(fill="x", pady=(0, 8))
+        row_file.pack(fill="x", pady=(0, 6))
         ttk.Entry(row_file, textvariable=self.ruta_csv_var).pack(side="left", fill="x", expand=True, padx=(0, 6))
         ttk.Button(row_file, text="Buscar", style="Secondary.TButton", command=self._seleccionar_csv).pack(side="right")
 
         ttk.Label(card_csv, text="Columna de Grupo:", style="Muted.TLabel").pack(anchor="w")
         self.cb_grupo = ttk.Combobox(card_csv, textvariable=self.col_grupo_var, state="readonly")
-        self.cb_grupo.pack(fill="x", pady=(2, 6))
+        self.cb_grupo.pack(fill="x", pady=(2, 4))
 
         ttk.Label(card_csv, text="Columna Usuario GitHub:", style="Muted.TLabel").pack(anchor="w")
         self.cb_usuario = ttk.Combobox(card_csv, textvariable=self.col_usuario_var, state="readonly")
-        self.cb_usuario.pack(fill="x", pady=(2, 6))
+        self.cb_usuario.pack(fill="x", pady=(2, 4))
 
         ttk.Label(card_csv, text="Columna Estado (Booleano):", style="Muted.TLabel").pack(anchor="w")
         self.cb_agregado = ttk.Combobox(card_csv, textvariable=self.col_agregado_var, state="readonly")
-        self.cb_agregado.pack(fill="x", pady=(2, 8))
+        self.cb_agregado.pack(fill="x", pady=(2, 6))
 
         row_umbral = ttk.Frame(card_csv, style="Panel.TFrame")
-        row_umbral.pack(fill="x", pady=(0, 8))
+        row_umbral.pack(fill="x", pady=(0, 6))
         ttk.Label(row_umbral, text="Umbral similitud (0.5 - 1.0):", style="Muted.TLabel").pack(side="left")
         ttk.Spinbox(
             row_umbral, from_=0.50, to=1.00, increment=0.05, textvariable=self.umbral_var, width=7, format="%.2f"
@@ -289,20 +348,20 @@ class RepCreatorApp(tk.Tk):
         self.btn_cargar.pack(fill="x")
 
         # 2. Credenciales GitHub
-        card_gh = ttk.LabelFrame(parent, text="2. Configuración GitHub (.env)", style="Card.TLabelframe")
-        card_gh.pack(fill="x", pady=(0, 10))
+        card_gh = ttk.LabelFrame(inner, text="2. Configuración GitHub (.env)", style="Card.TLabelframe")
+        card_gh.pack(fill="x", pady=(0, 4), padx=(0, 4))
 
         ttk.Label(card_gh, text="GitHub Token:", style="Muted.TLabel").pack(anchor="w")
-        ttk.Entry(card_gh, textvariable=self.token_var, show="*").pack(fill="x", pady=(2, 6))
+        ttk.Entry(card_gh, textvariable=self.token_var, show="*").pack(fill="x", pady=(2, 4))
 
         ttk.Label(card_gh, text="Colaborador por defecto (opcional):", style="Muted.TLabel").pack(anchor="w")
-        ttk.Entry(card_gh, textvariable=self.colaborador_defecto_var).pack(fill="x", pady=(2, 6))
+        ttk.Entry(card_gh, textvariable=self.colaborador_defecto_var).pack(fill="x", pady=(2, 4))
 
         ttk.Label(card_gh, text="Organización (dejar vacío si es cuenta personal):", style="Muted.TLabel").pack(anchor="w")
-        ttk.Entry(card_gh, textvariable=self.org_var).pack(fill="x", pady=(2, 6))
+        ttk.Entry(card_gh, textvariable=self.org_var).pack(fill="x", pady=(2, 4))
 
         row_pausa = ttk.Frame(card_gh, style="Panel.TFrame")
-        row_pausa.pack(fill="x", pady=(2, 6))
+        row_pausa.pack(fill="x", pady=(2, 4))
         ttk.Label(row_pausa, text="Pausa entre grupos (seg):", style="Muted.TLabel").pack(side="left")
         ttk.Spinbox(row_pausa, from_=2, to=60, increment=1, textvariable=self.pausa_grupos_var, width=7).pack(side="right")
 
@@ -312,35 +371,6 @@ class RepCreatorApp(tk.Tk):
             variable=self.auto_existentes_var,
             style="Panel.TCheckbutton",
         ).pack(anchor="w", pady=(2, 0))
-
-        # 3. Ejecución
-        card_run = ttk.LabelFrame(parent, text="3. Acciones en GitHub", style="Card.TLabelframe")
-        card_run.pack(fill="x")
-
-        self.btn_ejecutar = ttk.Button(
-            card_run,
-            text="Crear Repos y Asignar Pendientes",
-            style="Primary.TButton",
-            command=self._iniciar_procesamiento_repos,
-        )
-        self.btn_ejecutar.pack(fill="x", pady=(0, 6))
-
-        self.btn_defecto = ttk.Button(
-            card_run,
-            text="Solo asignar colaborador por defecto",
-            style="Secondary.TButton",
-            command=self._iniciar_solo_defecto,
-        )
-        self.btn_defecto.pack(fill="x", pady=(0, 6))
-
-        self.btn_detener = ttk.Button(
-            card_run,
-            text="Detener y Guardar Progreso",
-            style="Danger.TButton",
-            command=self._detener_proceso,
-            state="disabled",
-        )
-        self.btn_detener.pack(fill="x")
 
     def _construir_panel_derecho(self, parent: ttk.Frame) -> None:
         self.notebook = ttk.Notebook(parent)
